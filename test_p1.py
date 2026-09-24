@@ -44,13 +44,24 @@ class TestP1(unittest.TestCase):
     def test_exercise_4(self):
         self.check_language(
             solution.RE4,
-            ["ana_lopez.txt", "datos/luis_gil.csv", "a_b.csv"],
+            [
+                "ana_lopez.txt",
+                "datos/luis_gil.csv",
+                "a_b.csv",
+                "martindario_marmolejo.txt",
+            ],
             [
                 "Ana_lopez.txt",
                 "ana__lopez.txt",
                 "ana_lopez.pdf",
                 "datos/ana_lopezXcsv",
                 "otros/ana_lopez.csv",
+                "",
+                "analopez.csv",
+                "_analopez_.csv",
+                "ana_lopez.Csv",
+                "dato/sana_lopez.csv",
+                "ana _lopez.csv",
             ],
         )
 
@@ -63,7 +74,7 @@ class TestP1(unittest.TestCase):
     def test_exercise_6(self):
         self.check_language(
             solution.RE6,
-            ["rgb(0,0,0)", "rgb(255,128,7)", "rgb(10,20,255)"],
+            ["rgb(0,0,0)", "rgb(255,128,7)", "rgb(10,20,255)", "rgb(255,255,255)"],
             [
                 "rgb(256,0,0)",
                 "rgb(01,2,3)",
@@ -71,6 +82,11 @@ class TestP1(unittest.TestCase):
                 "rgb(1, 2,3)",
                 "RGB(1,2,3)",
                 "rgb(1,2,3,4)",
+                "rgb(001,001,001)",
+                "rgb(01,01,01)",
+                "rgb(*3,*3,*3)",
+                "rg b(2,2,2)",
+                "rgb(240.240.240)",
             ],
         )
         self.check_groups(solution.RE6, "rgb(255,128,7)", ("255", "128", "7"))
@@ -97,6 +113,11 @@ class TestP1(unittest.TestCase):
             ("lopez,  ana", "lopez,  ana"),
             ("x lopez, ana", "x lopez, ana"),
             ("lopez, ana\n", "lopez, ana\n"),
+            ("Lopez, ana", "Lopez, ana"),
+            ("lopez9, ana", "lopez9, ana"),
+            ("lopez,ana", "lopez,ana"),
+            ("lopezana", "lopezana"),
+            ("marmolejo, diaz, martin, dario", "marmolejo, diaz, martin, dario"),
         ]
         for text, expected in cases:
             with self.subTest(text=text):
