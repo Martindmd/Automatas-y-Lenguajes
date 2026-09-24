@@ -27,7 +27,7 @@ RE5 = r"([01][0-9]|2[0123]):([0-5][0-9]):([0-5][0-9])"
 RE6 = r"rgb\(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]),([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]),([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\)"
 
 # 7. Cada secuencia de espacios/tabuladores se sustituye por un espacio.
-RE7 = r"( [ ]+)|\t[ ]*"
+RE7 = r"[ ]*\t[ ]*|( [ ]+)"
 SUB7 = r" "
 
 # 8. Cadena completa apellido, nombre -> nombre apellido.

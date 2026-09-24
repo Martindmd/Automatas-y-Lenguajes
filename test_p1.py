@@ -26,10 +26,9 @@ class TestP1(unittest.TestCase):
         self.check_language(solution.RE0, ["a", "abba"], ["", "ba"])
 
     def test_exercise_1(self):
-        self.check_language(
-            solution.RE1, ["0", "10", "000", "1010101"], ["", "1", "00", "010", "10a"]
-        )
-
+        self.check_language(solution.RE1,
+                            ["0", "10", "000", "1010101", "111010101", "10001"],
+                            ["", "1", "00", "010", "10a", " 0", "10 010", "201"])
     def test_exercise_2(self):
         self.check_language(
             solution.RE2,
@@ -38,11 +37,9 @@ class TestP1(unittest.TestCase):
         )
 
     def test_exercise_3(self):
-        self.check_language(
-            solution.RE3,
-            ["0", "-12", "+3,14", "42,00", "-0,50"],
-            ["00", "012,30", "3,", "3,1", "3,141", "3.14"],
-        )
+        self.check_language(solution.RE3,
+                            ["0", "-12", "+3,14", "42,00", "-0,50",  "+1234,32", "-0,42", "103020" ],
+                            ["00", "012,30", "3,", "3,1", "3,141", "3.14", "10^3", "16a", "7,8$"])
 
     def test_exercise_4(self):
         self.check_language(
@@ -69,11 +66,9 @@ class TestP1(unittest.TestCase):
         )
 
     def test_exercise_5(self):
-        self.check_language(
-            solution.RE5,
-            ["00:00:00", "09:07:05", "23:59:59"],
-            ["24:00:00", "12:60:00", "12:00:60", "9:07:05", "09:07"],
-        )
+        self.check_language(solution.RE5,
+                            ["00:00:00", "09:07:05", "23:59:59", "18:25:40"],
+                            ["24:00:00", "12:60:00", "12:00:60", "9:07:05", "09:07", "34:93:60", "+34:12:30", "12:12:12am", "::"])
         self.check_groups(solution.RE5, "09:07:05", ("09", "07", "05"))
 
     def test_exercise_6(self):
@@ -97,12 +92,14 @@ class TestP1(unittest.TestCase):
         self.check_groups(solution.RE6, "rgb(255,128,7)", ("255", "128", "7"))
 
     def test_exercise_7(self):
+
         cases = [
             ("uno   dos\ttres", "uno dos tres"),
             ("  hola\t ", " hola "),
             ("a\n\t b", "a\n b"),
             ("sin_cambios", "sin_cambios"),
-            ("", ""),
+            ("", ""), ("  \tabc\n", " abc\n"), 
+            (" \t palabra  ", " palabra "), ("\t", " "), ("     ", " ")
         ]
         for text, expected in cases:
             with self.subTest(text=text):
