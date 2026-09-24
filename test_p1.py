@@ -29,11 +29,12 @@ class TestP1(unittest.TestCase):
         self.check_language(solution.RE1,
                             ["0", "10", "000", "1010101", "111010101", "10001"],
                             ["", "1", "00", "010", "10a", " 0", "10 010", "201"])
-
     def test_exercise_2(self):
-        self.check_language(solution.RE2,
-                            ["", "0", "1", "00100", "10101"],
-                            ["11", "0110", "1011", "102"])
+        self.check_language(
+            solution.RE2,
+            ["", "0", "1", "00100", "10101", "101", "1000000000000000000101"],
+            ["11", "0110", "1011", "102", "10a, 001100"],
+        )
 
     def test_exercise_3(self):
         self.check_language(solution.RE3,
@@ -41,10 +42,17 @@ class TestP1(unittest.TestCase):
                             ["00", "012,30", "3,", "3,1", "3,141", "3.14", "10^3", "16a", "7,8$"])
 
     def test_exercise_4(self):
-        self.check_language(solution.RE4,
-                            ["ana_lopez.txt", "datos/luis_gil.csv", "a_b.csv"],
-                            ["Ana_lopez.txt", "ana__lopez.txt", "ana_lopez.pdf",
-                             "datos/ana_lopezXcsv", "otros/ana_lopez.csv"])
+        self.check_language(
+            solution.RE4,
+            ["ana_lopez.txt", "datos/luis_gil.csv", "a_b.csv"],
+            [
+                "Ana_lopez.txt",
+                "ana__lopez.txt",
+                "ana_lopez.pdf",
+                "datos/ana_lopezXcsv",
+                "otros/ana_lopez.csv",
+            ],
+        )
 
     def test_exercise_5(self):
         self.check_language(solution.RE5,
@@ -53,25 +61,43 @@ class TestP1(unittest.TestCase):
         self.check_groups(solution.RE5, "09:07:05", ("09", "07", "05"))
 
     def test_exercise_6(self):
-        self.check_language(solution.RE6,
-                            ["rgb(0,0,0)", "rgb(255,128,7)", "rgb(10,20,255)"],
-                            ["rgb(256,0,0)", "rgb(01,2,3)", "rgb(-1,2,3)",
-                             "rgb(1, 2,3)", "RGB(1,2,3)", "rgb(1,2,3,4)"])
+        self.check_language(
+            solution.RE6,
+            ["rgb(0,0,0)", "rgb(255,128,7)", "rgb(10,20,255)"],
+            [
+                "rgb(256,0,0)",
+                "rgb(01,2,3)",
+                "rgb(-1,2,3)",
+                "rgb(1, 2,3)",
+                "RGB(1,2,3)",
+                "rgb(1,2,3,4)",
+            ],
+        )
         self.check_groups(solution.RE6, "rgb(255,128,7)", ("255", "128", "7"))
 
     def test_exercise_7(self):
-        cases = [("uno   dos\ttres", "uno dos tres"),
-                 ("  hola\t ", " hola "), ("a\n\t b", "a\n b"),
-                 ("sin_cambios", "sin_cambios"), ("", ""), ("  \tabc\n", " abc\n"), 
-                 (" \t palabra  ", " palabra "), ("\t", " "), ("     ", " ")]
+
+        cases = [
+            ("uno   dos\ttres", "uno dos tres"),
+            ("  hola\t ", " hola "),
+            ("a\n\t b", "a\n b"),
+            ("sin_cambios", "sin_cambios"),
+            ("", ""), ("  \tabc\n", " abc\n"), 
+            (" \t palabra  ", " palabra "), ("\t", " "), ("     ", " ")
+        ]
         for text, expected in cases:
             with self.subTest(text=text):
                 self.assertEqual(re.sub(solution.RE7, solution.SUB7, text), expected)
 
     def test_exercise_8(self):
-        cases = [("lopez, ana", "ana lopez"), ("gil, luis", "luis gil"),
-                 ("lopez,ana", "lopez,ana"), ("lopez,  ana", "lopez,  ana"),
-                 ("x lopez, ana", "x lopez, ana"), ("lopez, ana\n", "lopez, ana\n")]
+        cases = [
+            ("lopez, ana", "ana lopez"),
+            ("gil, luis", "luis gil"),
+            ("lopez,ana", "lopez,ana"),
+            ("lopez,  ana", "lopez,  ana"),
+            ("x lopez, ana", "x lopez, ana"),
+            ("lopez, ana\n", "lopez, ana\n"),
+        ]
         for text, expected in cases:
             with self.subTest(text=text):
                 self.assertEqual(re.sub(solution.RE8, solution.SUB8, text), expected)
