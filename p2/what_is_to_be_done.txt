@@ -1,0 +1,21 @@
+-------- Implementar código de Autómata finito en automaton.py. ·· 3 puntos ··: 
+- implementando la clase FiniteAutomaton, sin modificar las funciones to_deterministic o to_minimized
+- para guiarse en cuanto a este apartado, superar test_evaluator (superar los tests != aprobar)
+
+-------- Implementar código para la transformación de Expresiones Regulares (p1) en Autómatas Finitos. ·· 1.5 puntos ··:
+- implementando las funciones de la clase REParser en re_parser.py
+- para guiarse en cuanto a este apartado, superar test_re_parser.py
+    1. función _create_automaton_empty: Crea el autómata que acepta el lenguaje vacío
+    2. funcion _create_automaton_lambda: Crea el autómata que acepta la cadena vacía
+    3. funcion _create_automaton_symbol: Crea el autómata que acepta un símbolo
+    4. funcion _create_automaton_star: Crea el autómata para calcular la estrella de Kleene de un autómata dado
+    5. funcion _create_automaton_union: Crea el autómata para calcular la unión de dos autómatas dados
+    6. funcion _create_automaton_concat: Crea el autómata para calcular la concatenación de dos autómatas dados
+
+-------- Implementar el código necesario para la transformación de Autómatas finitos no deterministas en Autómatas finitos deterministas. ·· 2,5 puntos ··
+- implementando específicamente el código de la función to_deterministic en automaton.py
+- para guiarse en cuanto a este apartado, superar test_to_deterministic
+
+-------- Implementar el código necesario para la minimización de Autómatas finitos. ·· 3 puntos ··
+- implementando específicamente el código de la función to_minimized en automaton.py
+- para guiarse en cuanto a este apartado, superar test_minimization
