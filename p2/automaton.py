@@ -41,9 +41,15 @@ class FiniteAutomaton:
         pass
 
     def add_transition(self, start_state, symbol, end_state):
+        
+        
+
+
         pass
 
     def accepts(self, cadena):
+
+
         pass
 
     def to_deterministic(self):
