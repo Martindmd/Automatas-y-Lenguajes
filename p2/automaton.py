@@ -43,7 +43,7 @@ class FiniteAutomaton:
         self.symbols = symbols
         self.transitions = transitions
             # = {
-            #   state1: {Symbolo: [stante_next1, state_next_2...], ... #As many states as symbols},
+            #   state1: {Symbolo: [stante_next1, state_next_2...], ...},
             #   state2: {Symbolo: [stante_next1, state_next_2...], ...},
             #   ...
             #}
@@ -55,7 +55,7 @@ class FiniteAutomaton:
             
 
 
-        self.final_states = final_states #???
+        self.final_states = final_states
 
         pass
 
