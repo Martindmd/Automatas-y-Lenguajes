@@ -38,14 +38,93 @@ def is_deterministic(automaton):
 class FiniteAutomaton:
 
     def __init__(self, initial_state, states, symbols, transitions, final_states):
+        self.initial_state = initial_state
+        self.states = states
+        self.symbols = symbols
+        self.transitions = transitions
+            # = {
+            #   state1: {Symbolo: [stante_next1, state_next_2...], ...},
+            #   state2: {Symbolo: [stante_next1, state_next_2...], ...},
+            #   ...
+            #}
+            # Como puede ser no determinista, hay que dejar la posibilidad de poner mas de
+            # un estado por simbolo...
+            # symbolo puede ser vacia o lambda, Ya que en
+            #  utils.py en el read, se puden crear transiciones sin simbolo...
+            # Ya que se inicializa un automata con todo vacio y luego es que se le dan los valores
+            
+
+
+        self.final_states = final_states
+
         pass
 
     def add_transition(self, start_state, symbol, end_state):
+
+        # Revisar si symbol, start_state y end_state existen de verdad
+        # Crearlos en caso de que no existan
+        self.transitions.setdefault(start_state, {})
+        self.transitions[start_state].setdefault(symbol, [])
+
+
+        self.transitions[start_state][symbol].append(end_state)
+
         pass
 
     def accepts(self, cadena):
-        pass
 
+        current_states = [self.initial_state]
+        next_states = []
+
+
+        # Obtener todos los nodos posibles que se consigan desde initialstate Si tienen 
+        # transition lambda o transition sin ningun simbolo
+
+        for estado in current_states:
+            for destino in self.transitions.get(estado, {}).get(None, []):
+                if destino not in current_states:
+                    current_states.append(destino)
+
+
+
+
+
+        for symbol in cadena:
+
+            # Checkeo para SALIR
+            if not current_states:
+                return False
+
+
+
+            # Revisar ssi el Simbolo es aceptable
+            if symbol in self.symbols:                
+
+                for estado in self.transitions:
+                    if estado in current_states:
+                        next_states.extend(self.transitions.get(estado, {}).get(symbol, []))
+
+
+            # Para el segundo simbolo(s): revisar si algunos de los estados conseguidos anteriormente
+            # aceptan nuevos simbolos sin ninguna transcicion (lambda), y obtener nuevos estados para cada uno
+
+            for estado in next_states:
+                for destino in self.transitions.get(estado, {}).get(None, []):
+                    if destino not in next_states:
+                        next_states.append(destino)
+
+            
+            current_states = next_states
+            next_states = []
+        
+
+
+        for state in current_states:
+            if state in self.final_states:
+                return True
+
+        return False #
+    
     def to_deterministic(self):
         pass
 

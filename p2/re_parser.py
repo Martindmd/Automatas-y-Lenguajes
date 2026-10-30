@@ -61,8 +61,13 @@ class REParser():
         """
         #---------------------------------------------------------------------
         # TO DO: Implement this method...
-        raise NotImplementedError("This method must be implemented.")        
+        #raise NotImplementedError("This method must be implemented.")        
         #---------------------------------------------------------------------
+
+        emptyState = f"{self.state_counter}" # None 
+        return FiniteAutomaton(emptyState, states=[emptyState], symbols=(), transitions={}, final_states=[])
+
+
         
 
     def _create_automaton_lambda(self):
@@ -75,8 +80,13 @@ class REParser():
         """
         #---------------------------------------------------------------------
         # TO DO: Implement this method...
-        raise NotImplementedError("This method must be implemented.")        
+        #raise NotImplementedError("This method must be implemented.")        
         #---------------------------------------------------------------------
+
+        #lambdaState = ""
+        lambdaState = f"{self.state_counter}" 
+        return FiniteAutomaton(lambdaState, states=[lambdaState], symbols=(), transitions={}, final_states=[lambdaState])
+
 
 
     def _create_automaton_symbol(self, symbol):
@@ -92,8 +102,17 @@ class REParser():
         """
         #---------------------------------------------------------------------
         # TO DO: Implement this method...
-        raise NotImplementedError("This method must be implemented.")        
+        #raise NotImplementedError("This method must be implemented.")        
         #---------------------------------------------------------------------
+
+        symbolState = f"{self.state_counter}" # Como necesitamos dos simbolos, usamos este valor para asegurarnos de que sean distintos
+        self.state_counter+=1
+        symbolState2 = f"{self.state_counter}"
+        self.state_counter += 1
+
+        return FiniteAutomaton(symbolState, states=[symbolState, symbolState2], symbols=(symbol,), 
+                               transitions={symbolState: {symbol: [symbolState2]}}, final_states=[symbolState2])
+
 
 
     def _create_automaton_star(self, automaton):
