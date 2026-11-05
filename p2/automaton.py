@@ -162,7 +162,7 @@ class FiniteAutomaton:
             current_states = queue.popleft()
             
             # Comprobamos si este conjunto de estados contiene algún estado final original
-            # Si es así, este nuevo estado también es final.
+            # Si es asi, este nuevo estado también es final.
             if any(state in self.final_states for state in current_states):
                 new_final_states.add(current_states)
 
