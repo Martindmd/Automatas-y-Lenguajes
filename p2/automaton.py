@@ -126,7 +126,95 @@ class FiniteAutomaton:
         return False #
     
     def to_deterministic(self):
-        pass
+        # Obtener todos los nodos posibles que se consigan desde initialstate Si tienen 
+        # transition lambda o transition sin ningun simbolo
+        initial_states = [self.initial_state]
+        #for estado in initial_states:
+        i = 0
+        while i < len(initial_states):
+            estado = initial_states[i]
+            for destino in self.transitions.get(estado, {}).get(None, []):
+                if destino not in initial_states:
+                    initial_states.append(destino)
+            i+=1
+
+
+        initial_states = tuple(sorted(initial_states)) #sorted?
+        queue = deque([initial_states])
+        visited = set([initial_states])
+
+
+        # Ej del video: Q  = q1, q2, q3
+        #               Q' = q1->{q1,q2}|None || [q1, q2] -> simismo|{q3}|| {q3}->{q2}|{q3} || {q2}->{q1,q2}|{q3}
+        # States = {
+                    #           q1: {0: [q1, q2], 1: None}
+                    # NEW= [q1,q2]: {0: [q1, q2], [q3]}
+                    #           q3: {0: [q2], 1: [q3]},
+                    #           q2: {0: [q2], 1: [q3]},
+                    #   ...
+                    #}
+        
+        #states = [str(y[1]) for x in tabla for y in x[1] if y[1] not in states and y[1] != None]
+        new_transitions = {}    
+        new_final_states = set()
+
+        while queue:
+            current_states = queue.popleft()
+            
+            # Comprobamos si este conjunto de estados contiene algún estado final original
+            # Si es así, este nuevo estado también es final.
+            if any(state in self.final_states for state in current_states):
+                new_final_states.add(current_states)
+
+
+            new_transitions[current_states] = {}
+
+            for symbol in self.symbols:
+                next_states_list = []
+                
+                for state in current_states:
+                    destinations = self.transitions.get(state, {}).get(symbol, [])
+                    for dest in destinations:
+                        if dest not in next_states_list:
+                            next_states_list.append(dest)
+
+                # Obtener todos los nodos posibles que se consigan Si tienen 
+                # transition lambda o transition sin ningun simbolo
+                i = 0
+                while i < len(next_states_list):
+                    estado = next_states_list[i]
+                    for destino in self.transitions.get(estado, {}).get(None, []):
+                        if destino not in next_states_list:
+                            next_states_list.append(destino)
+                    i += 1
+
+                next_states_tuple = tuple(sorted(next_states_list))
+
+                if next_states_tuple not in visited:
+                    visited.add(next_states_tuple)
+                    queue.append(next_states_tuple)
+                    
+                new_transitions[current_states][symbol] = [next_states_tuple]
+
+
+        # Para la creacion del Automata, convertir estados a strings
+
+        final_transitions_dict = {}
+        for start_set, transitions in new_transitions.items():
+            start_str = "{" + ",".join(sorted(start_set)) + "}"
+            final_transitions_dict[start_str] = {}
+            for symbol, dest_list in transitions.items():
+                final_transitions_dict[start_str][symbol] = ["{" + ",".join(sorted(dest_set)) + "}" for dest_set in dest_list]
+
+
+        final_states_list = ["{" + ",".join(sorted(s)) + "}" for s in visited]
+        final_final_states = ["{" + ",".join(sorted(s)) + "}" for s in new_final_states]
+
+        initial_states_str = "{" + ",".join(sorted(initial_states)) + "}"
+
+
+        return FiniteAutomaton(initial_states_str, final_states_list, self.symbols, final_transitions_dict, final_final_states)
+        #pass
 
     def to_minimized(self):
         pass
