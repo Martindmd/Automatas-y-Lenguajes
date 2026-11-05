@@ -64,7 +64,7 @@ class REParser():
         #raise NotImplementedError("This method must be implemented.")        
         #---------------------------------------------------------------------
 
-        emptyState = f"{self.state_counter}" # None 
+        emptyState = f"{self.state_counter}" # None  ""
         return FiniteAutomaton(emptyState, states=[emptyState], symbols=(), transitions={}, final_states=[])
 
 
