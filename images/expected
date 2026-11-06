@@ -1,0 +1,15 @@
+// Automata
+digraph {
+	rankdir=LR
+	"" [shape=none]
+	q0 [shape=circle]
+	qf [shape=doublecircle]
+	empty [shape=circle]
+	"" -> q0
+	q0 -> qf [label=0]
+	q0 -> empty [label=1]
+	qf -> empty [label=0]
+	qf -> qf [label=1]
+	empty -> empty [label=0]
+	empty -> empty [label=1]
+}

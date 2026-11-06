@@ -38,16 +38,183 @@ def is_deterministic(automaton):
 class FiniteAutomaton:
 
     def __init__(self, initial_state, states, symbols, transitions, final_states):
+        self.initial_state = initial_state
+        self.states = states
+        self.symbols = symbols
+        self.transitions = transitions
+            # = {
+            #   state1: {Symbolo: [stante_next1, state_next_2...], ...},
+            #   state2: {Symbolo: [stante_next1, state_next_2...], ...},
+            #   ...
+            #}
+            # Como puede ser no determinista, hay que dejar la posibilidad de poner mas de
+            # un estado por simbolo...
+            # symbolo puede ser vacia o lambda, Ya que en
+            #  utils.py en el read, se puden crear transiciones sin simbolo...
+            # Ya que se inicializa un automata con todo vacio y luego es que se le dan los valores
+            
+
+
+        self.final_states = final_states
+
         pass
 
     def add_transition(self, start_state, symbol, end_state):
+
+        # Revisar si symbol, start_state y end_state existen de verdad
+        # Crearlos en caso de que no existan
+        self.transitions.setdefault(start_state, {})
+        self.transitions[start_state].setdefault(symbol, [])
+
+
+        self.transitions[start_state][symbol].append(end_state)
+
         pass
 
     def accepts(self, cadena):
-        pass
 
+        current_states = [self.initial_state]
+        next_states = []
+
+
+        # Obtener todos los nodos posibles que se consigan desde initialstate Si tienen 
+        # transition lambda o transition sin ningun simbolo
+
+        for estado in current_states:
+            for destino in self.transitions.get(estado, {}).get(None, []):
+                if destino not in current_states:
+                    current_states.append(destino)
+
+
+
+
+
+        for symbol in cadena:
+
+            # Checkeo para SALIR
+            if not current_states:
+                return False
+
+
+
+            # Revisar ssi el Simbolo es aceptable
+            if symbol in self.symbols:                
+
+                for estado in self.transitions:
+                    if estado in current_states:
+                        next_states.extend(self.transitions.get(estado, {}).get(symbol, []))
+
+
+            # Para el segundo simbolo(s): revisar si algunos de los estados conseguidos anteriormente
+            # aceptan nuevos simbolos sin ninguna transcicion (lambda), y obtener nuevos estados para cada uno
+
+            for estado in next_states:
+                for destino in self.transitions.get(estado, {}).get(None, []):
+                    if destino not in next_states:
+                        next_states.append(destino)
+
+            
+            current_states = next_states
+            next_states = []
+        
+
+
+        for state in current_states:
+            if state in self.final_states:
+                return True
+
+        return False #
+    
     def to_deterministic(self):
-        pass
+        # Obtener todos los nodos posibles que se consigan desde initialstate Si tienen 
+        # transition lambda o transition sin ningun simbolo
+        initial_states = [self.initial_state]
+        #for estado in initial_states:
+        i = 0
+        while i < len(initial_states):
+            estado = initial_states[i]
+            for destino in self.transitions.get(estado, {}).get(None, []):
+                if destino not in initial_states:
+                    initial_states.append(destino)
+            i+=1
+
+
+        initial_states = tuple(sorted(initial_states)) #sorted?
+        queue = deque([initial_states])
+        visited = set([initial_states])
+
+
+        # Ej del video: Q  = q1, q2, q3
+        #               Q' = q1->{q1,q2}|None || [q1, q2] -> simismo|{q3}|| {q3}->{q2}|{q3} || {q2}->{q1,q2}|{q3}
+        # States = {
+                    #           q1: {0: [q1, q2], 1: None}
+                    # NEW= [q1,q2]: {0: [q1, q2], [q3]}
+                    #           q3: {0: [q2], 1: [q3]},
+                    #           q2: {0: [q2], 1: [q3]},
+                    #   ...
+                    #}
+        
+        #states = [str(y[1]) for x in tabla for y in x[1] if y[1] not in states and y[1] != None]
+        new_transitions = {}    
+        new_final_states = set()
+
+        while queue:
+            current_states = queue.popleft()
+            
+            # Comprobamos si este conjunto de estados contiene algún estado final original
+            # Si es asi, este nuevo estado también es final.
+            if any(state in self.final_states for state in current_states):
+                new_final_states.add(current_states)
+
+
+            new_transitions[current_states] = {}
+
+            for symbol in self.symbols:
+                next_states_list = []
+                
+                for state in current_states:
+                    destinations = self.transitions.get(state, {}).get(symbol, [])
+                    for dest in destinations:
+                        if dest not in next_states_list:
+                            next_states_list.append(dest)
+
+                # Obtener todos los nodos posibles que se consigan Si tienen 
+                # transition lambda o transition sin ningun simbolo
+                i = 0
+                while i < len(next_states_list):
+                    estado = next_states_list[i]
+                    for destino in self.transitions.get(estado, {}).get(None, []):
+                        if destino not in next_states_list:
+                            next_states_list.append(destino)
+                    i += 1
+
+                next_states_tuple = tuple(sorted(next_states_list))
+
+                if next_states_tuple not in visited:
+                    visited.add(next_states_tuple)
+                    queue.append(next_states_tuple)
+                    
+                new_transitions[current_states][symbol] = [next_states_tuple]
+
+
+        # Para la creacion del Automata, convertir estados a strings
+
+        final_transitions_dict = {}
+        for start_set, transitions in new_transitions.items():
+            start_str = "{" + ",".join(sorted(start_set)) + "}"
+            final_transitions_dict[start_str] = {}
+            for symbol, dest_list in transitions.items():
+                final_transitions_dict[start_str][symbol] = ["{" + ",".join(sorted(dest_set)) + "}" for dest_set in dest_list]
+
+
+        final_states_list = ["{" + ",".join(sorted(s)) + "}" for s in visited]
+        final_final_states = ["{" + ",".join(sorted(s)) + "}" for s in new_final_states]
+
+        initial_states_str = "{" + ",".join(sorted(initial_states)) + "}"
+
+
+        return FiniteAutomaton(initial_states_str, final_states_list, self.symbols, final_transitions_dict, final_final_states)
+        #pass
 
     def to_minimized(self):
         pass
