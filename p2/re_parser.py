@@ -65,6 +65,7 @@ class REParser():
         #---------------------------------------------------------------------
 
         emptyState = f"{self.state_counter}" # None  ""
+        self.state_counter += 1
         return FiniteAutomaton(emptyState, states=[emptyState], symbols=(), transitions={}, final_states=[])
 
 
@@ -85,6 +86,7 @@ class REParser():
 
         #lambdaState = ""
         lambdaState = f"{self.state_counter}" 
+        self.state_counter += 1
         return FiniteAutomaton(lambdaState, states=[lambdaState], symbols=(), transitions={}, final_states=[lambdaState])
 
 
@@ -128,8 +130,59 @@ class REParser():
         """
         #---------------------------------------------------------------------
         # TO DO: Implement this method...
-        raise NotImplementedError("This method must be implemented.")  
+        # raise NotImplementedError("This method must be implemented.")  
         #---------------------------------------------------------------------
+
+        new_initial = str(self.state_counter)
+        self.state_counter += 1
+
+        # Para una estrella, solo hace falta que el ultimo nodo vuelva al inicial si se repite el simbolo
+        #automat = automaton.copy()
+        # COPIAR VALORES
+
+        # obtener nuevos estados para los viejos para que no choquen
+        created_states = {}
+        for i, s in enumerate(automaton.states):
+            created_states[s] = str(self.state_counter + i)
+
+        self.state_counter += len(automaton.states)
+        new_states = [new_initial] + list(created_states.values())
+        new_symbols = automaton.symbols
+
+        # El nuevo inicio es fina. Los finales viejos también se mantienen.
+        new_final_states = [new_initial] + [created_states[f] for f in automaton.final_states]
+        new_transitions = {}
+        
+         # Copiar transiciones originales 
+        for state, trans in automaton.transitions.items():
+            new_state = created_states[state]
+            new_transitions[new_state] = {}
+            for symbol, dests in trans.items():
+                new_transitions[new_state][symbol] = [created_states[dest] for dest in dests]
+
+
+
+        # For every final state: conectar final con viejo/inicial?
+        #FiniteAutomaton.add_transition(automat, automaton.final_states, automaton.symbols[0], automaton.initial_state)
+
+        # nuevo inicial al viejo inicial
+        new_transitions[new_initial] = {
+            None: [created_states[automaton.initial_state]]
+        }
+
+        # cada viejo final al viejo inicial 
+        for f in automaton.final_states:
+            new_f = created_states[f]
+            if new_f not in new_transitions:
+                new_transitions[new_f] = {}
+            if None not in new_transitions[new_f]:
+                new_transitions[new_f][None] = []
+            new_transitions[new_f][None].append(created_states[automaton.initial_state])
+
+        
+
+
+        return FiniteAutomaton(new_initial, new_states, new_symbols, new_transitions, new_final_states)
 
 
     def _create_automaton_union(self, automaton1, automaton2):
@@ -146,8 +199,52 @@ class REParser():
         """
         #---------------------------------------------------------------------
         # TO DO: Implement this method...
-        raise NotImplementedError("This method must be implemented.")  
+        # raise NotImplementedError("This method must be implemented.")  
         #---------------------------------------------------------------------
+
+        new_initial = str(self.state_counter)
+        self.state_counter += 1
+
+
+        # producto cartesiano de los estados
+        #new_states = [(x, y) for x in automaton1.states for y in automaton2.states]
+        map_aut1 = {}
+        for i, s in enumerate(automaton1.states):
+            map_aut1[s] = str(self.state_counter + i)
+        map_aut2 = {}
+        for i, s in enumerate(automaton2.states):
+            map_aut2[s] = str(self.state_counter + i)
+
+        new_states = [new_initial] + list(map_aut1.values()) + list(map_aut2.values())
+
+        #new_symbols = automaton1.symbols | automaton2.symbols
+        new_symbols = tuple(set(automaton1.symbols) | set(automaton2.symbols)) 
+
+
+        #new_final_states = [map1[f] for f in automaton1.final_states] + [map2[f] for f in automaton2.final_states]
+        new_final_states = set()
+        for (p, q) in new_states:
+            if p in automaton1.final_states or q in automaton2.final_states:
+                new_final_states.add((p, q))
+
+        
+        new_initial_states = (automaton1.initial_state, automaton2.initial_state)
+
+        new_transitions = {}
+        for (p, q) in new_states:
+            for simbol in new_symbols:
+                au1_next = automaton1.transitions.get(p, {}).get(simbol, [])
+                au2_next = automaton2.transitions.get(q, {}).get(simbol, [])
+                
+                # Solo creamos la transicion si ambos estados destino existen
+                if au1_next is not None and au2_next is not None:
+                    new_transitions[((p, q), simbol)] = (au1_next, au2_next)
+
+
+
+        return FiniteAutomaton(new_initial_states, states=new_states, symbols=new_symbols, 
+                        transitions=new_transitions, final_states=new_final_states)
+
 
 
     def _create_automaton_concat(self, automaton1, automaton2):
