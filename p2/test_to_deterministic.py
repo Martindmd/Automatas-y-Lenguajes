@@ -62,15 +62,20 @@ class TestTransform(ABC, unittest.TestCase):
     # Dos Tests adicionales  para el Ejercicio 2
 
     def test_case2(self):
-            """Test Case 1."""
+            """Test Case 2."""
             automaton_str = """
             Automaton:
             Symbols: 01
             
             q0
+            q1
             qf final
             
             ini q0 -0-> qf
+            ini q0 -1-> q1
+            q1 -1-> qf
+            q1 -1-> q0
+            q1 -0-> qf
             qf -1-> qf
             """
     
@@ -81,57 +86,30 @@ class TestTransform(ABC, unittest.TestCase):
             Symbols: 01
             
             q0
+            q1
             qf final
             empty
+            q0_qf final
+            q1_qf final
             
             ini q0 -0-> qf
-            q0 -1-> empty
+            q0 -1-> q1
             qf -0-> empty
             qf -1-> qf
+            q1 -0-> qf
+            q1 -1-> q0_qf
             empty -0-> empty
             empty -1-> empty
-            
+            q0_qf -0-> qf
+            q0_qf -1-> q1_qf
+            q1_qf -0-> qf
+            q1_qf -1-> q0_qf
             """
     
             expected = AutomataFormat.read(expected_str)
     
             self._check_transform(automaton, expected)
 
-    def test_case2(self):
-            """Test Case 1."""
-            automaton_str = """
-            Automaton:
-            Symbols: 01
-            
-            q0
-            qf final
-            
-            ini q0 -0-> qf
-            qf -1-> qf
-            """
-    
-            automaton = AutomataFormat.read(automaton_str)
-    
-            expected_str = """
-            Automaton:
-            Symbols: 01
-            
-            q0
-            qf final
-            empty
-            
-            ini q0 -0-> qf
-            q0 -1-> empty
-            qf -0-> empty
-            qf -1-> qf
-            empty -0-> empty
-            empty -1-> empty
-            
-            """
-    
-            expected = AutomataFormat.read(expected_str)
-    
-            self._check_transform(automaton, expected)
     
     
 

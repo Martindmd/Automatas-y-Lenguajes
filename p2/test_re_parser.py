@@ -99,12 +99,22 @@ class TestREParser(unittest.TestCase):
 
     def test_phone_number(self):
         """Test for phone number expression """
-        num = "(0+1+2+3+4+5+6+7+8+9+ )"
+        num = "(0+1+2+3+4+5+6+7+8+9)"
 
-        # +34 624 528220
+        # +34 624 528220 <- Ignoramos el +
         evaluator = self._create_evaluator(
-            f"(+{num}{num} {num}{num}{num}",
+            f"{num}.{num}. .{num}.{num}.{num}. .{num}.{num}.{num}.{num}.{num}.{num}",
         )
+
+        evaluator.draw(filename="test_phone_number", view=False)
+
+        self._check_accept(evaluator, "34 624 528220",  should_accept=True)
+        self._check_accept(evaluator, "",               should_accept=False)
+        self._check_accept(evaluator, "34624528220",    should_accept=False)
+        self._check_accept(evaluator, "34 624 5282201", should_accept=False)
+        self._check_accept(evaluator, "3 624 528220",   should_accept=False)
+        self._check_accept(evaluator, "34 62 528220",   should_accept=False)
+        self._check_accept(evaluator, "34-624-528220",  should_accept=False)
 
 
 

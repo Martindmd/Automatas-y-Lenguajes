@@ -3,13 +3,22 @@ digraph {
 	rankdir=LR
 	"" [shape=none]
 	q0 [shape=circle]
+	q1 [shape=circle]
 	qf [shape=doublecircle]
 	empty [shape=circle]
+	q0_qf [shape=doublecircle]
+	q1_qf [shape=doublecircle]
 	"" -> q0
 	q0 -> qf [label=0]
-	q0 -> empty [label=1]
+	q0 -> q1 [label=1]
 	qf -> empty [label=0]
 	qf -> qf [label=1]
+	q1 -> qf [label=0]
+	q1 -> q0_qf [label=1]
 	empty -> empty [label=0]
 	empty -> empty [label=1]
+	q0_qf -> qf [label=0]
+	q0_qf -> q1_qf [label=1]
+	q1_qf -> qf [label=0]
+	q1_qf -> q0_qf [label=1]
 }
