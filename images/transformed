@@ -2,9 +2,9 @@
 digraph {
 	rankdir=LR
 	"" [shape=none]
-	"{qf}" [shape=doublecircle]
 	"{q0}" [shape=circle]
 	"{}" [shape=circle]
+	"{qf}" [shape=doublecircle]
 	"" -> "{q0}"
 	"{q0}" -> "{qf}" [label=0]
 	"{q0}" -> "{}" [label=1]

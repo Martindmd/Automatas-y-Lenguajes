@@ -83,5 +83,30 @@ class TestREParser(unittest.TestCase):
         self._check_accept(evaluator, "3,7,12", should_accept=False)
 
 
+    # Dos Tests adicionales  para el Ejercicio 2
+    def test_fixed_adicional(self):
+        """Test fixed regex."""
+        evaluator = self._create_evaluator("W.o.r.l.d")
+
+        evaluator.draw(filename="test_fixed_adicional", view=False)
+
+        self._check_accept(evaluator, "World", should_accept=True)
+        self._check_accept(evaluator, "Woorld", should_accept=False)
+        self._check_accept(evaluator, "Wrld", should_accept=False)
+        self._check_accept(evaluator, "Wor", should_accept=False)
+        self._check_accept(evaluator, "rld", should_accept=False)
+        self._check_accept(evaluator, "", should_accept=False)
+
+    def test_phone_number(self):
+        """Test for phone number expression """
+        num = "(0+1+2+3+4+5+6+7+8+9+ )"
+
+        # +34 624 528220
+        evaluator = self._create_evaluator(
+            f"(+{num}{num} {num}{num}{num}",
+        )
+
+
+
 if __name__ == "__main__":
     unittest.main()

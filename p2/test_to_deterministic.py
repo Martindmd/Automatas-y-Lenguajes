@@ -59,6 +59,83 @@ class TestTransform(ABC, unittest.TestCase):
 
         self._check_transform(automaton, expected)
 
+    # Dos Tests adicionales  para el Ejercicio 2
+
+    def test_case2(self):
+            """Test Case 1."""
+            automaton_str = """
+            Automaton:
+            Symbols: 01
+            
+            q0
+            qf final
+            
+            ini q0 -0-> qf
+            qf -1-> qf
+            """
+    
+            automaton = AutomataFormat.read(automaton_str)
+    
+            expected_str = """
+            Automaton:
+            Symbols: 01
+            
+            q0
+            qf final
+            empty
+            
+            ini q0 -0-> qf
+            q0 -1-> empty
+            qf -0-> empty
+            qf -1-> qf
+            empty -0-> empty
+            empty -1-> empty
+            
+            """
+    
+            expected = AutomataFormat.read(expected_str)
+    
+            self._check_transform(automaton, expected)
+
+    def test_case2(self):
+            """Test Case 1."""
+            automaton_str = """
+            Automaton:
+            Symbols: 01
+            
+            q0
+            qf final
+            
+            ini q0 -0-> qf
+            qf -1-> qf
+            """
+    
+            automaton = AutomataFormat.read(automaton_str)
+    
+            expected_str = """
+            Automaton:
+            Symbols: 01
+            
+            q0
+            qf final
+            empty
+            
+            ini q0 -0-> qf
+            q0 -1-> empty
+            qf -0-> empty
+            qf -1-> qf
+            empty -0-> empty
+            empty -1-> empty
+            
+            """
+    
+            expected = AutomataFormat.read(expected_str)
+    
+            self._check_transform(automaton, expected)
+    
+    
+
+
 
 if __name__ == '__main__':
     unittest.main()
