@@ -1,0 +1,59 @@
+MARTIN: Impares
+Andres: Pares (el ultimo ejercicio a lo mejor si no da tiempo lo hace el que pueda? Ehhh yo creo que estara bien)
+
+RESUMEN:
+- Hacer 6 ejercicios (6to ejercicio de 3 partes)
+- Hacer la Memoria
+-----------------------------------------------------------
+
+EJERCICIOS
+
+- Crear nuevos tests para cada ejercicio
+    - Total: x ejercicios
+
+Ejercicio 1 (2 pts):
+- Modificar el método analyze() de la clase LL1Table en grammar.py
+
+Ejercicio 2 (1 pto):
+- Modificar el metodo compute_first() en grammar.py
+- En test_first.py y test_contracts.py se facilitan tests (añadir 2?)
+
+Ejercicio 3 (1,5 ptos):
+- Modificar el método compute_follow() en grammar.py
+- En test_follow.py y test_contracts.py se facilitan tests
+
+Ejercicio 4 (1,5 ptos):
+- Completad el método get_ll1_table de la clase Grammar
+- En test_ll1_table.py se comprueban directamente las casillas y la detección de conflictos.
+test_analyze.py incluye además comprobaciones conjuntas de construcción de tabla y
+análisis
+
+Ejercicio 5 (1 pto):
+- Completad, en g1_parser.py, 
+- En test_g1.py se facilitarán tests de ejemplo
+
+Ejercicio 6 (3 ptos):
+- Parte 1 (1 pto):
+    - Completad las reglas y acciones semánticas de json_parser.py
+- Parte 2 (1 pto):
+    - Validación y casos incorrectos 
+    - Se facilitarán ejemplos y tests en test_json.py ; no se requiere MongoDB
+- Parte 3: Diferencias entre gramáticas  (1 pto):
+    -
+
+--------------------------------
+MEMORIA 
+
+Responded en Memoria.pdf :
+1. Construye los conjuntos primero y siguiente de los no terminales de ambas gramáticas.
+
+2. Para ambas gramáticas, construye el estado inicial del autómata LR(1) canónico...
+
+3. Rellena las entradas de la tabla ACTION/GOTO que pueden determinarse con esos
+estados. Para desplazamientos cuyo destino quede fuera del fragmento dibujado, basta
+indicar «desplazar». ¿Existen conflictos? ¿De qué tipo? Explica qué permite concluir
+encontrar un conflicto en este fragmento y qué no permite concluir su ausencia.
+
+4. Explica el efecto del conflicto inicial de G1 al analizar I frente a IV , suponiendo que se
+resuelve a favor de desplazar. Relaciónalo con la producción vacía y el símbolo de
+anticipación. No concluyas que toda recursión izquierda es inadecuada para LR.
