@@ -1,0 +1,20 @@
+// Automata
+digraph {
+	rankdir=LR
+	"" [shape=none]
+	10 [shape=circle]
+	11 [shape=circle]
+	12 [shape=circle]
+	13 [shape=doublecircle]
+	14 [shape=circle]
+	15 [shape=doublecircle]
+	"" -> 10
+	11 -> 12 [label=a]
+	10 -> 11 [label="λ"]
+	10 -> 13 [label="λ"]
+	12 -> 11 [label="λ"]
+	12 -> 13 [label="λ"]
+	14 -> 15 [label=b]
+	13 -> 14 [label="λ"]
+	15 -> 14 [label="λ"]
+}

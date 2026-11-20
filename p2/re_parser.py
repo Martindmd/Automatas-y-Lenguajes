@@ -211,38 +211,49 @@ class REParser():
         map_aut1 = {}
         for i, s in enumerate(automaton1.states):
             map_aut1[s] = str(self.state_counter + i)
+        self.state_counter += len(automaton1.states)
         map_aut2 = {}
         for i, s in enumerate(automaton2.states):
             map_aut2[s] = str(self.state_counter + i)
+        self.state_counter += len(automaton2.states)
 
         new_states = [new_initial] + list(map_aut1.values()) + list(map_aut2.values())
 
         #new_symbols = automaton1.symbols | automaton2.symbols
         new_symbols = tuple(set(automaton1.symbols) | set(automaton2.symbols)) 
-
-
-        #new_final_states = [map1[f] for f in automaton1.final_states] + [map2[f] for f in automaton2.final_states]
-        new_final_states = set()
-        for (p, q) in new_states:
-            if p in automaton1.final_states or q in automaton2.final_states:
-                new_final_states.add((p, q))
-
         
-        new_initial_states = (automaton1.initial_state, automaton2.initial_state)
+        new_final_states = [map_aut1[i] for i in automaton1.final_states] + [map_aut2[j] for j in automaton2.final_states]
 
         new_transitions = {}
-        for (p, q) in new_states:
-            for simbol in new_symbols:
-                au1_next = automaton1.transitions.get(p, {}).get(simbol, [])
-                au2_next = automaton2.transitions.get(q, {}).get(simbol, [])
-                
-                # Solo creamos la transicion si ambos estados destino existen
-                if au1_next is not None and au2_next is not None:
-                    new_transitions[((p, q), simbol)] = (au1_next, au2_next)
+        new_transitions[new_initial] = {
+            None: [map_aut1[automaton1.initial_state], map_aut2[automaton2.initial_state]]
+        }
+
+        for state in automaton1.transitions:
+            transitions = automaton1.transitions[state]
+            new_s = map_aut1[state]
+            new_transitions[new_s] = {}
+            for symbol in transitions:
+                dests = transitions[symbol]
+                new_transitions[new_s][symbol] = [map_aut1[d] for d in dests]
+
+        
+        #for i in automaton2.transitions:
+        #    new_transitions.append(i)
+
+        for state in automaton2.transitions:
+            transitions = automaton2.transitions[state]
+            new_s = map_aut2[state]
+            new_transitions[new_s] = {}
+            for symbol in transitions:
+                dests = transitions[symbol]
+                new_transitions[new_s][symbol] = [map_aut2[d] for d in dests]
+
+        
 
 
 
-        return FiniteAutomaton(new_initial_states, states=new_states, symbols=new_symbols, 
+        return FiniteAutomaton(new_initial, states=new_states, symbols=new_symbols, 
                         transitions=new_transitions, final_states=new_final_states)
 
 
@@ -261,8 +272,63 @@ class REParser():
         """
         #---------------------------------------------------------------------
         # TO DO: Implement this method...
-        raise NotImplementedError("This method must be implemented.")     
+        #raise NotImplementedError("This method must be implemented.")     
         #---------------------------------------------------------------------
+
+        # Crear nuevos estados
+        map_aut1 = {}
+        for i, s in enumerate(automaton1.states):
+            map_aut1[s] = str(self.state_counter + i)
+        self.state_counter += len(automaton1.states)
+        map_aut2 = {}
+        for i, s in enumerate(automaton2.states):
+            map_aut2[s] = str(self.state_counter + i)
+        self.state_counter += len(automaton2.states)
+
+        # Juntar sus lenguajes, transiciones, etc
+        new_initial = map_aut1[automaton1.initial_state]
+
+        new_states = list(map_aut1.values()) + list(map_aut2.values())
+        new_symbols = tuple(set(automaton1.symbols) | set(automaton2.symbols)) 
+
+        new_transitions = {}
+
+        for state in automaton1.transitions:
+            transitions = automaton1.transitions[state]
+            new_s = map_aut1[state]
+            new_transitions[new_s] = {}
+            for symbol in transitions:
+                dests = transitions[symbol]
+                new_transitions[new_s][symbol] = [map_aut1[d] for d in dests]
+
+        for state in automaton2.transitions:
+            transitions = automaton2.transitions[state]
+            new_s = map_aut2[state]
+            new_transitions[new_s] = {}
+            for symbol in transitions:
+                dests = transitions[symbol]
+                new_transitions[new_s][symbol] = [map_aut2[d] for d in dests]
+
+
+
+
+
+        # Simplemente hacer que el estado final del automaton 1 lleva al estado inicial del autmoaton 2
+
+            # create TrANSICION
+        #for i in automaton1.final_states:
+         
+        for i in automaton1.final_states:
+            new_f = map_aut1[i]
+            if new_f not in new_transitions:
+                new_transitions[new_f] = {}
+            if None not in new_transitions[new_f]:
+                new_transitions[new_f][None] = []
+            new_transitions[new_f][None].append(map_aut2[automaton2.initial_state])
+
+        new_final_states = [map_aut2[i] for i in automaton2.final_states]
+
+        return FiniteAutomaton(new_initial, new_states, new_symbols, new_transitions, new_final_states)
 
 
     def create_automaton(

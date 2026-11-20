@@ -1,0 +1,25 @@
+// Automata
+digraph {
+	rankdir=LR
+	"" [shape=none]
+	28 [shape=circle]
+	29 [shape=circle]
+	30 [shape=circle]
+	31 [shape=circle]
+	32 [shape=circle]
+	33 [shape=circle]
+	34 [shape=circle]
+	35 [shape=circle]
+	36 [shape=circle]
+	37 [shape=doublecircle]
+	"" -> 28
+	28 -> 29 [label=H]
+	30 -> 31 [label=e]
+	29 -> 30 [label="λ"]
+	32 -> 33 [label=l]
+	31 -> 32 [label="λ"]
+	34 -> 35 [label=l]
+	33 -> 34 [label="λ"]
+	36 -> 37 [label=o]
+	35 -> 36 [label="λ"]
+}

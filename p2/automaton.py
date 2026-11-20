@@ -6,6 +6,8 @@
 from collections import deque
 from graphviz import Digraph
 
+# Import para to_minimized
+from queue import Queue
 """
     Podéis implementar cualquier función auxiliar que consideréis necesaria
 """
@@ -217,6 +219,80 @@ class FiniteAutomaton:
         #pass
 
     def to_minimized(self):
+        if not is_deterministic(self):
+            print("ERROR: ha de tratarse de un automata determinista")
+            return None
+        # hacer BFS de los estados del automata desde el inicial
+        q = Queue()
+        q.put(self.initial_state)
+        new_states = []
+        while not q.empty():
+            node = q.get()
+            if node in new_states:
+                continue
+            # Conseguir nodos "hijo" y añadimos a cola
+            print("NODE: "+ str(node))
+            for child in list(self.transitions[node].values()):
+                q.put(child[0])
+            new_states.append(node)
+
+        # Algoritmo para minimización en sí comienza aquí
+        earlier_dict = {}
+        perm_dict = {}
+        clase = 1
+        change = 1
+        #Instanciar valores de clase para la primera iteración (0 para no finales, 1 para sí)
+        for state in new_states:
+            if state in self.final_states:
+                earlier_dict[state] = 1
+            else:
+                earlier_dict[state] = 0
+        # loop de iteraciones hasta que no haya cambio entre la anterior y la actual
+        while change == 1:
+            #Iteraciones individuales del algoritmo
+            temp_dict = {}
+            for state in new_states:
+                if state not in temp_dict:
+                    if state not in perm_dict:
+                        temp_dict[state] = earlier_dict[state]
+                    else:
+                        temp_dict[state] = perm_dict[state]
+                for sub_state in new_states:
+                    if state == sub_state:
+                        continue
+                    # Lógica para comprobar que el valor de clase de todos los hijos del estado coinciden con los hijos del subestado
+                    truth_value = True
+                    for symbol in list(self.transitions[state].keys()):
+                        if earlier_dict[self.transitions[state][symbol][0]] != earlier_dict[self.transitions[sub_state][symbol][0]]:
+                            truth_value = False
+                    if sub_state not in temp_dict and earlier_dict[sub_state] == temp_dict[state] and truth_value:
+                        temp_dict[sub_state] = temp_dict[state]
+                    else:
+                        temp_dict[sub_state],perm_dict[sub_state] = clase, clase
+                        clase += 1
+            if earlier_dict == temp_dict:
+                change = 0
+            earlier_dict = temp_dict
+
+        final_states = self.final_states
+        transitions = self.transitions
+        for keys in earlier_dict.keys():
+            for sub_keys in earlier_dict.keys():
+                if keys == sub_keys:
+                    continue
+                elif earlier_dict[keys] == earlier_dict[sub_keys]:
+                    if sub_keys in final_states:
+                        final_states.pop(sub_keys)
+                        final_states.append(keys)
+                    if sub_keys in transitions:
+                        transitions.pop(sub_keys)
+                    earlier_dict.pop(sub_keys)
+        #Asignar valores correctos a los parámetros usados para crear el Autómata minimizado
+        initial_state = self.initial_state
+        states = list(earlier_dict.keys())
+        symbols = self.symbols
+
+        return FiniteAutomaton(initial_state, states, symbols, transitions, final_states)
         pass
 
     def draw(self, path="./images/", filename="automata.png", view=False):
